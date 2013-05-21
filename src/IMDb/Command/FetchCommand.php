@@ -71,7 +71,9 @@ class FetchCommand extends Command
 
         foreach ($this->lists as $list) {
             $this->logger->info($list);
-            $lists[$list] = $client->getList($list);
+            list($listBy, $result) = $client->getList($list);
+
+            $lists[$listBy] = $result;
         }
 
         var_dump($lists);

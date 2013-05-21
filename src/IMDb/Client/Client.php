@@ -33,8 +33,9 @@ class Client extends BaseClient
     public function getList($id)
     {
         $crawler = $this->request('GET', $this->baseUrl.'/list/'.$id);
-        $exportFile = $crawler->filterXPath('//div[contains(@class, "see-more")]/div[contains(@class, "create")]/div[@class="export"]/a')->attr('href');
+        $listBy = $crawler->filterXPath('//div[@data-list-id="'.$id.'"]/div[@class="byline"]/a');
 
+        $exportFile = $crawler->filterXPath('//div[contains(@class, "see-more")]/div[contains(@class, "create")]/div[@class="export"]/a')->attr('href');
         $csvExport = file_get_contents($this->baseUrl.$exportFile);
 
         foreach (explode("\n", $csvExport) as $csvRow) {
@@ -57,6 +58,9 @@ class Client extends BaseClient
             }
         }
 
-        return isset($return) ? $return : false;
+        return isset($return) ? array(
+            'listby'    => $listBy->text(),
+            'list'      => $return,
+        ) : false;
     }
 }
