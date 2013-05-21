@@ -34,10 +34,12 @@ class Client extends BaseClient
     {
         $crawler = $this->request('GET', $this->baseUrl.'/list/'.$id);
         $exportFile = $crawler->filterXPath('//div[contains(@class, "see-more")]/div[contains(@class, "create")]/div[@class="export"]/a')->attr('href');
+
         $csvExport = file_get_contents($this->baseUrl.$exportFile);
 
         foreach (explode("\n", $csvExport) as $csvRow) {
             if (!isset($headers)) {
+                // first row will ALWAYS be header unless csv is changed
                 $headers = str_getcsv($csvRow);
             } elseif ($csvRow) {
                 $data = str_getcsv($csvRow);
